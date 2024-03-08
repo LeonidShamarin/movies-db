@@ -16,6 +16,7 @@
     "@types/node": "^16.18.86",
     "@types/react": "^18.2.63",
     "@types/react-dom": "^18.2.20",
+    "leaflet": "^1.9.4",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.4",
     "react": "^18.2.0",
@@ -54,6 +55,7 @@
     ]
   },
   "devDependencies": {
+    "@types/leaflet": "^1.9.8",
     "sass": "^1.69.5"
   }
 }

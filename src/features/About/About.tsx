@@ -1,13 +1,15 @@
-import React from "react";
+import { Container } from "@mui/material";
+import { CountdownVideo } from "./CountdownVideo";
+import { CountdownText } from "./CountdownText";
+import { MapView } from "./MapView";
 
 function About() {
   return (
-    <div>
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur
-      voluptatem at quos omnis tempora delectus, dolorem veritatis, facere ut
-      provident doloremque? Quos explicabo a placeat animi tempore quaerat, rem
-      consequatur.
-    </div>
+    <Container sx={{ py: 8 }} maxWidth="md">
+      <CountdownText />
+      <CountdownVideo />
+      <MapView />
+    </Container>
   );
 }
 
