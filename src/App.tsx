@@ -1,35 +1,10 @@
-import {
-  AppBar,
-  CssBaseline,
-  Toolbar,
-  Link,
-  ThemeProvider,
-  createTheme,
-  Typography,
-} from "@mui/material";
-import LiveTvOutlinedIcon from "@mui/icons-material/LiveTvOutlined";
-import { Link as RouterLink, Outlet } from "react-router-dom";
-import { teal } from "@mui/material/colors";
+import { Outlet } from "react-router-dom";
+import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 
-function HeaderLink({
-  children,
-  to,
-}: {
-  to: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      component={RouterLink}
-      to={to}
-      variant="button"
-      color="inherit"
-      sx={{ my: 1, mx: 1.5 }}
-    >
-      {children}
-    </Link>
-  );
-}
+import { teal } from "@mui/material/colors";
+import { AppHeader } from "./AppHeader";
+import { AuthContext, AuthInfo, anonymousUser } from "./AuthContext";
+import { useState } from "react";
 
 const defaultTheme = createTheme({
   palette: {
@@ -40,30 +15,28 @@ const defaultTheme = createTheme({
   },
 });
 
+const fakeAuth: AuthInfo = {
+  user: {
+    name: "Samuray",
+  },
+};
+
 function App() {
+  const [auth, setAuth] = useState<AuthInfo>({ user: anonymousUser });
+
   return (
     <ThemeProvider theme={defaultTheme}>
       {/* ця компонента проводить номалізацію властивостей css */}
       <CssBaseline />
-      <AppBar>
-        <Toolbar>
-          <LiveTvOutlinedIcon sx={{ mr: 2 }} />
-          <Typography variant="h6" color="inherit" noWrap>
-            The Movies DB
-          </Typography>
-
-          <nav>
-            <HeaderLink to="/">Home</HeaderLink>
-            <HeaderLink to="/movies"> Movies</HeaderLink>
-            <HeaderLink to="/about"> About</HeaderLink>
-          </nav>
-        </Toolbar>
-      </AppBar>
-      <main>
-        <Outlet />
-      </main>
+      <AuthContext.Provider value={auth}>
+        <AppHeader onLogin={() => setAuth(fakeAuth)} onLogout={() => setAuth({ user: anonymousUser })} />
+        <main>
+          <Outlet />
+        </main>
+      </AuthContext.Provider>
     </ThemeProvider>
   );
 }
 
 export default App;
+
