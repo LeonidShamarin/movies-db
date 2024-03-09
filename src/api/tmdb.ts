@@ -1,24 +1,21 @@
 
 import configuration from "../configuration";
 
+const apiBasePath = `${configuration.apiUrl}/3`;
 
 async function get<TBody>(relativeUrl: string): Promise<TBody> {
-  const options = {
+  var headers = new Headers();
+  headers.append("Accept", "application/json");
+  headers.append("Authorization", `Bearer ${configuration.apiToken}`);
+
+  var requestOptions = {
     method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization: `Bearer ${configuration.apiToken}`,
-    //   Authorization: `${_apiKey}`,
-    },
+    headers: headers,
   };
 
-  const response = await fetch(
-    //    `https://api.themoviedb.org/3${relativeUrl}`,
-    `${configuration.apiUrl}/3${relativeUrl}`,
-    options
-  );
-  const json: TBody = await response.json();
-  return json;
+  const response = await fetch(`${apiBasePath}${relativeUrl}`, requestOptions);
+  const value: TBody = await response.json();
+  return value;
 }
 
 export interface MovieDetails {
@@ -32,6 +29,13 @@ export interface MovieDetails {
 interface PageResponse<TResult> {
   page: number;
   results: TResult[];
+  total_pages: number;
+  total_results: number;
+}
+interface PageDetails<TResult> {
+  page: number;
+  results: TResult[];
+  totalPages: number;
 }
 
 interface Configuration {
@@ -40,15 +44,22 @@ interface Configuration {
   };
 }
 
-export const client = {
-  async getConfiguration() {
-    return get<Configuration>("/configuration");
-  },
-  async getNowPlaying(): Promise<MovieDetails[]> {
-    const response = await get<PageResponse<MovieDetails>>(
-      "/movie/now_playing?page=1"
-    );
+interface ITmbdClient {
+  getConfiguration: () => Promise<Configuration>;
+  getNowPlaying: (page: number) => Promise<PageDetails<MovieDetails>>;
+}
 
-    return response.results;
+export const client: ITmbdClient = {
+  getConfiguration: async () => {
+    const response = await get<Configuration>("/configuration");
+    return response;
+  },
+  getNowPlaying: async (page: number = 1) => {
+    const response = await get<PageResponse<MovieDetails>>(`/movie/now_playing?page=${page}`);
+    return {
+      results: response.results,
+      totalPages: response.total_pages,
+      page: response.page,
+    };
   },
 };
