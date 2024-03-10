@@ -53,9 +53,11 @@ useEffect(()=> {
       <Grid item xs={12}>
         <Container sx={{ py: 8 }} maxWidth="lg">
           <Grid container spacing={4}>
-            {movies.map((item) => (
-              <Grid item key={item.id} xs={12} sm={6} md={4}>
+{/* тут складений ключ разом з ідексом, бо api фільми дублюються на сторінках             */}
+            {movies.map((item, i) => (
+              <Grid item key={`${item.id}-${i}`} xs={12} sm={6} md={4}>
                 <MovieCard
+
                   key={item.id}
                   id={item.id}
                   title={item.title}
